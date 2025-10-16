@@ -1,0 +1,29 @@
+{
+  "datasetId": "8fbxxxxd-7b2c-437d-baec-90002c18a3xx",
+  "basic": {
+    "dateSubmitted": "2024-07-25",
+    "dataOwnerId": "7bxx3455ce9a29c21be4700f803e94ae0e2bacd220626234303563xx",
+    "dataName": "${filename}",
+    "instrumentId": null,
+    "experimentId": null,
+    "description": ""
+  },
+  "custom": {
+    "model_type": "convolution voigt",
+    "noise_type": "gauss",
+    "common_data_type": "BIC-fitting",
+    "common_data_origin": "experiments",
+    "common_technical_category": "calculation",
+    "common_reference": "H. Shinotsuka, H. Yoshikawa, R. Murakami, K. Nakamura, H. Tanaka, K. Yoshihara, Automated information compression of XPS spectrum using information criteria, Journal of Electron Spectroscopy and Related Phenomena. 239 (2020) 146903. https://doi.org/10.1016/j.elspec.2019.146903.",
+    "calculation_calculation_method": "BIC-fitting",
+    "calculation_supercom_or_pc": "azure cloud",
+    "calculation_os": "Debian GNU/Linux 13 (trixie)",
+    "calculation_software_name": null,
+    "calculation_software_version": null,
+    "calculation_software_reference": "https://doi.org/10.1016/j.elspec.2019.146903",
+    "calculation_operator": "RDE",
+    "calculation_calculated_date": null,
+    "calculation_material_name": null,
+    "calculation_key_object": null
+  }
+}

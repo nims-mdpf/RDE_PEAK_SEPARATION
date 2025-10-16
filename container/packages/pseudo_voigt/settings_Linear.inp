@@ -1,0 +1,3 @@
+ratioPeakHeightThreshold       0.01
+backgroundType               Linear
+allowedNegativeRatio         0.05
