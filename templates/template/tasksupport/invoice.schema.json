@@ -1,0 +1,178 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://dice.nims.go.jp/rde/dataset-templates/peak-separation/invoice.schema.json",
+    "description": "固有情報と試料情報のスキーマ",
+    "type": "object",
+    "required": [
+        "custom"
+    ],
+    "properties": {
+        "custom": {
+            "type": "object",
+            "label": {
+                "ja": "固有情報",
+                "en": "Custom Information"
+            },
+            "required": [],
+            "properties": {
+                "model_type": {
+                    "label": {
+                        "ja": "モデルの種類",
+                        "en": "Model type"
+                    },
+                    "type": "string",
+                    "enum": [
+                        "convolution voigt",
+                        "pseudo voigt"
+                    ],
+                    "default": "convolution voigt"
+                },
+                "noise_type": {
+                    "label": {
+                        "ja": "ノイズの種類",
+                        "en": "Noise type"
+                    },
+                    "type": "string",
+                    "enum": [
+                        "gauss",
+                        "poisson"
+                    ],
+                    "default": "gauss"
+                },
+                "common_data_type": {
+                    "label": {
+                        "ja": "登録データタイプ",
+                        "en": "Data type"
+                    },
+                    "type": "string",
+                    "default": "BIC-fitting"
+                },
+                "common_data_origin": {
+                    "type": "string",
+                    "label": {
+                        "ja": "データの起源",
+                        "en": "Data Origin"
+                    },
+                    "default": "experiments",
+                    "enum": [
+                        "experiments",
+                        "informatics and data science",
+                        "simulations",
+                        "theory",
+                        "other"
+                    ]
+                },
+                "common_technical_category": {
+                    "type": "string",
+                    "label": {
+                        "ja": "技術カテゴリー",
+                        "en": "Technical Category"
+                    },
+                    "default": "calculation"
+                },
+                "common_reference": {
+                    "type": "string",
+                    "label": {
+                        "ja": "参考文献",
+                        "en": "Reference"
+                    },
+                    "default": "H. Shinotsuka, H. Yoshikawa, R. Murakami, K. Nakamura, H. Tanaka, K. Yoshihara, Automated information compression of XPS spectrum using information criteria, Journal of Electron Spectroscopy and Related Phenomena. 239 (2020) 146903. https://doi.org/10.1016/j.elspec.2019.146903."
+                },
+                "calculation_calculation_method": {
+                    "type": "string",
+                    "label": {
+                        "ja": "計算方法",
+                        "en": "Calculation method"
+                    },
+                    "default": "BIC-fitting"
+                },
+                "calculation_supercom_or_pc": {
+                    "type": "string",
+                    "label": {
+                        "ja": "SuperComまたはPC",
+                        "en": "SuperCom or PC"
+                    },
+                    "default": "azure cloud"
+                },
+                "calculation_os": {
+                    "type": "string",
+                    "label": {
+                        "ja": "オペレーティングシステム",
+                        "en": "OS"
+                    },
+                    "default": "Debian GNU/Linux 13 (trixie)"
+                },
+                "calculation_software_name": {
+                    "type": "string",
+                    "label": {
+                        "ja": "ソフトウェア名称",
+                        "en": "Software name"
+                    },
+                    "options": {
+                        "placeholder": {
+                            "ja": "システムで自動入力します",
+                            "en": "Automatically entered by the system"
+                        }
+                    }
+                },
+                "calculation_software_version": {
+                    "type": "string",
+                    "label": {
+                        "ja": "ソフトウェアバージョン",
+                        "en": "Software version"
+                    },
+                    "options": {
+                        "placeholder": {
+                            "ja": "システムで自動入力します",
+                            "en": "Automatically entered by the system"
+                        }
+                    }
+                },
+                "calculation_software_reference": {
+                    "type": "string",
+                    "label": {
+                        "ja": "ソフトウェア参照",
+                        "en": "Software reference"
+                    },
+                    "default": "https://doi.org/10.1016/j.elspec.2019.146903"
+                },
+                "calculation_operator": {
+                    "type": "string",
+                    "label": {
+                        "ja": "計算実行者",
+                        "en": "Operator"
+                    },
+                    "default": "RDE"
+                },
+                "calculation_calculated_date": {
+                    "type": "string",
+                    "label": {
+                        "ja": "計算日",
+                        "en": "Calculated date"
+                    },
+                    "format": "date",
+                    "options": {
+                        "placeholder": {
+                            "ja": "登録日から自動取得します",
+                            "en": "Automatically get from the registration date"
+                        }
+                    }
+                },
+                "calculation_material_name": {
+                    "type": "string",
+                    "label": {
+                        "ja": "物質名",
+                        "en": "Material name"
+                    }
+                },
+                "calculation_key_object": {
+                    "type": "string",
+                    "label": {
+                        "ja": "キーの配列/計算される主な物性",
+                        "en": "Key object"
+                    }
+                }
+            }
+        }
+    }
+}
