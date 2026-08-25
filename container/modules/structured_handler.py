@@ -35,17 +35,38 @@ class StructuredDataProcessor:
 
         """
         try:
-            os.chdir("../..")
+
+            target_csv_patterns = [
+                "*_parameters.csv",
+                "*_result.csv",
+                "summary_BIC.csv",
+            ]
+            move_files = []
             if invoice_obj["custom"]["model_type"] == "pseudo voigt":
-                move_files = glob.glob(os.path.join(resource_paths.temp, "*.csv")) + \
-                    glob.glob(os.path.join(resource_paths.temp, "*.txt"))
-                move_files.remove(os.path.join(resource_paths.temp, "_data.csv"))
+                for pattern in target_csv_patterns:
+                    move_files.extend(glob.glob(os.path.join(resource_paths.temp, pattern)))
+                move_files += glob.glob(os.path.join(resource_paths.temp, "*.txt"))
+                data_file = os.path.join(resource_paths.temp, "_data.csv")
+                if data_file in move_files:
+                    move_files.remove(data_file)
             else:
-                move_files = glob.glob(os.path.join(resource_paths.temp, "*.csv"))
-                move_files.remove(os.path.join(resource_paths.temp, resource_paths.rawfiles[0].name))
+                for pattern in target_csv_patterns:
+                    move_files.extend(glob.glob(os.path.join(resource_paths.temp, pattern)))
+                raw_file = os.path.join(
+                    resource_paths.temp,
+                    resource_paths.rawfiles[0].name,
+                )
+                if raw_file in move_files:
+                    move_files.remove(raw_file)
+
             for move_file in move_files:
                 shutil.move(move_file, resource_paths.struct)
-            shutil.copy(os.path.join(resource_paths.temp, "result_figures.pptx"), resource_paths.struct)
+
+            shutil.copy(
+                os.path.join(resource_paths.temp, "result_figures.pptx"),
+                resource_paths.struct,
+            )
+
         except Exception as e:
             err_msg = "failed in file moving."
             raise StructuredError(err_msg) from e

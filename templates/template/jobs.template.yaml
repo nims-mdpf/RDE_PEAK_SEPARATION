@@ -5,7 +5,7 @@ job_specifications:
   max_task_retries: 0
   tasks:
   - id: task_1
-    docker_image: rdecontreg.azurecr.io/nims/mdpf_shared/nims_mdpf_shared_peak_separation:v1.0.0
+    docker_image: rdecontreg.azurecr.io/nims/mdpf_shared/nims_mdpf_shared_peak_separation:v1.1.0
     # docker_image: stgrdecontreg.azurecr.io/nims/mdpf_shared/nims_mdpf_shared_peak_separation:v0.9.18
     command: python /app/main.py
     input_data:

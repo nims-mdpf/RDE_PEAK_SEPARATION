@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import glob
-import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -68,46 +66,66 @@ class FileReader:
 
         Args:
             resource_paths (RdeOutputResourcePath): resource paths.
-            invoice_obj (dict): invoice data.
 
         Raises:
             StructuredError: Fitting failure.
 
         """
-        # 入力ファイルを'temp'にコピーし、一行目を削除したファイル'_data.csv'を作成
-        target_file = resource_paths.rawfiles[0]  # There can only be one file.
-        shutil.copy(target_file, resource_paths.temp)
-        input_file = os.path.join(resource_paths.temp, Path(target_file).name)
-        with open(input_file, encoding='utf-8') as fin, \
-                open(os.path.join(resource_paths.temp, "_data.csv"), 'w', encoding='utf-8') as fout:
-            next(fin)
-            for line in fin:
-                fout.write(line)
-        os.remove(input_file)
-
-        # ピーク分離実行
-        os.chdir(resource_paths.temp)
-        cmds = [
-            "python",
-            "/app/packages/pseudo_voigt/automatic_xps_peak_separation_single.py",
-            "-p",
-            "_data.csv",
-        ]
         try:
-            subprocess.run(
-                cmds,
-                encoding="utf_8",
-                capture_output=True,
-                check=True,
-            )
-            move_files = glob.glob("log*.txt")
-            for move_file in move_files:
-                shutil.move(move_file, "../logs/")
-        except Exception as e:
-            err_msg = "failed in data fitting."
-            raise StructuredError(err_msg) from e
+            target_file = Path(resource_paths.rawfiles[0])
+            temp_dir = Path(resource_paths.temp)
 
-    def _fit_voigt_given_by_convolution(self, resource_paths: RdeOutputResourcePath, invoice_obj: dict) -> None:
+            target = target_file.name
+            dst = temp_dir / target
+
+            if target_file.resolve() != dst.resolve():
+                shutil.copy(target_file, dst)
+
+            input_file = temp_dir / "_data.csv"
+
+            with open(dst, encoding="utf-8") as fin, \
+                    open(input_file, "w", encoding="utf-8") as fout:
+                next(fin)
+                for line in fin:
+                    fout.write(line)
+
+            cmds = [
+                "python",
+                "/app/packages/pseudo_voigt/automatic_xps_peak_separation_single.py",
+                "-p",
+                "_data.csv",
+            ]
+
+            result = subprocess.run(
+                cmds,
+                check=False,
+                cwd=temp_dir,
+                encoding="utf-8",
+                capture_output=True,
+            )
+
+            if result.returncode != 0:
+                msg = "pseudo voigt process failed."
+                raise RuntimeError(msg)
+
+            logs_dir = temp_dir.parent / "logs"
+            logs_dir.mkdir(exist_ok=True)
+
+            for log_file in temp_dir.glob("log*.txt"):
+                shutil.move(
+                    str(log_file),
+                    str(logs_dir / log_file.name),
+                )
+
+        except Exception as e:
+            msg = "failed in data fitting."
+            raise StructuredError(msg) from e
+
+    def _fit_voigt_given_by_convolution(
+            self,
+            resource_paths: RdeOutputResourcePath,
+            invoice_obj: dict,
+    ) -> None:
         """Fit voigt given by convolution.
 
         Args:
@@ -118,34 +136,50 @@ class FileReader:
             StructuredError: Fitting failure.
 
         """
-        # 入力ファイルを'temp'にコピー
-        target_file = resource_paths.rawfiles[0]  # There can only be one file.
-        target = Path(target_file).name
-        shutil.copy(target_file, resource_paths.temp)
-
-        # ピーク分離実行
-        os.chdir(resource_paths.temp)
-        cmds = [
-            "python",
-            "/app/packages/convolution_voigt/peakSeparationForXPS.py",
-            "--noise",
-            invoice_obj["custom"]["noise_type"],
-            target,
-        ]
         try:
-            log_file = "process.log"
-            with open(log_file, "w") as fp:
-                subprocess.run(
-                    cmds,
-                    encoding="utf_8",
-                    stdout=fp,
-                    stderr=subprocess.STDOUT,
-                    check=True,
+            target_file = Path(resource_paths.rawfiles[0])
+            temp_dir = Path(resource_paths.temp)
+
+            target = target_file.name
+            dst = temp_dir / target
+
+            if target_file.resolve() != dst.resolve():
+                shutil.copy(target_file, dst)
+
+            cmds = [
+                "python",
+                "/app/packages/convolution_voigt/peakSeparationForXPS.py",
+                "--noise",
+                invoice_obj["custom"]["noise_type"],
+                target,
+            ]
+
+            result = subprocess.run(
+                cmds,
+                check=False,
+                cwd=temp_dir,
+                encoding="utf-8",
+                capture_output=True,
+            )
+
+            if result.returncode != 0:
+                msg = "convolution voigt process failed."
+                raise RuntimeError(msg)
+
+            logs_dir = temp_dir.parent / "logs"
+            logs_dir.mkdir(exist_ok=True)
+
+            log_file = temp_dir / "process.log"
+
+            if log_file.exists():
+                shutil.move(
+                    str(log_file),
+                    str(logs_dir / log_file.name),
                 )
-            shutil.move(log_file, "../logs/")
+
         except Exception as e:
-            err_msg = "failed in data fitting."
-            raise StructuredError(err_msg) from e
+            msg = "failed in data fitting."
+            raise StructuredError(msg) from e
 
     def read(self, srcpath: Path) -> tuple[MetaType, pd.DataFrame]:
         """Read input file (No use)."""

@@ -282,12 +282,10 @@ if __name__ == '__main__':
 
         cnt += 1
 
-
     # ## 枠
     # shp = slide.shapes.add_textbox(0, int(height * 0.18) + pic_height, width, (text_height + pic_height) * 2)
     # # shp.text = 'sample'
     # shp.line.color.rgb = RGBColor(0, 0, 0)
-
 
     pptfile = "result_figures.pptx"
     print('Output to', pptfile)

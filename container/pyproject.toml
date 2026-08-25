@@ -1,6 +1,7 @@
 [project]
 name = "Peak Separation"
-version = "1.0.0"
+version = "1.1.0"
+requires-python = ">=3.12,<3.13"
 
 [tool.coverage.run]
 omit = ["tests/*"]
@@ -25,7 +26,7 @@ exclude_also = [
 ]
 
 [tool.ruff]
-line-length = 1000
+line-length = 120
 select = [
     "F",    # pyflakes
     "E",    # pycodestyle
@@ -109,34 +110,35 @@ exclude = [
 ]
 
 [tool.pyrefly]
-untyped_def_behavior = "check-and-infer-return-type"
-# use_untyped_imports = true
-ignore_missing_source = true
-replace_imports_with_any = [
+untyped-def-behavior = "check-and-infer-return-type"
+# use-untyped-imports = true
+ignore-missing-source = true
+replace-imports-with-any = [
     "pandas.*",
     "numpy.*",
     "requests.*",
     "matplotlib.*",
     "scipy.*",
     "rdetoolkit.*",
+    "modules.*",
 ]
 # Set to false because our project rarely uses auto-generated code
 # such as Protocol Buffers, Django ORM migrations, GraphQL code generation,
 # or OpenAPI/Swagger generated code. We prefer to maintain consistent
 # type checking across all source files.
-ignore_errors_in_generated_code=false
+ignore-errors-in-generated-code=false
 
-# project_includes = ["**/*.py", "**/*.pyi"]
-project_excludes = ["tests/**", "**/.[!/.]*", "**/__pycache__/**"]
-python_version = "3.11"
-python_platform = "linux"
+# project-includes = ["**/*.py", "**/*.pyi"]
+project-excludes = ["tests/**", "**/.[!/.]*", "**/__pycache__/**"]
+python-version = "3.12"
+python-platform = "linux"
 
 [tool.pyrefly.errors]
 bad-assignment = true
 bad-argument-type = true
 bad-argument-count = true
 missing-argument = true
-import-error = false # 
+# import-error = true
 invalid-annotation = true
 missing-attribute = false
 not-callable = true

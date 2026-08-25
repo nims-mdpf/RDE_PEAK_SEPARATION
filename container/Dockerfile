@@ -1,5 +1,5 @@
-# Python Verison: 3.11
-FROM python:3.11-slim-bookworm
+## Python Version:3.12
+FROM python:3.12-slim-bookworm
 
 ENV OMP_NUM_THREADS=16
 
