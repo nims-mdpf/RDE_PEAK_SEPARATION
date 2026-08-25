@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Generic, TypeVar
+from typing import TypeVar
 
 import pandas as pd
-from rdetoolkit.models.rde2types import MetaType, RepeatedMetaType
+from rdetoolkit.models.rde2types import MetaType, RdeOutputResourcePath, RepeatedMetaType
 from rdetoolkit.rde2util import Meta
 
 T = TypeVar("T")
@@ -33,7 +33,7 @@ class IInputFileParser(ABC):
         raise NotImplementedError
 
 
-class IMetaParser(ABC, Generic[T]):
+class IMetaParser[T](ABC):
     """Abstract base class (interface) for meta information parsers.
 
     This interface defines the contract that meta information parser
@@ -65,7 +65,7 @@ class IMetaParser(ABC, Generic[T]):
         raise NotImplementedError
 
 
-class IGraphPlotter(ABC, Generic[T]):
+class IGraphPlotter[T](ABC):
     """Abstract base class (interface) for graph plotting implementations.
 
     This interface defines the contract that graph plotting
@@ -77,14 +77,7 @@ class IGraphPlotter(ABC, Generic[T]):
 
     """
 
-    # @abstractmethod
-    # def plot(
-    #     self,
-    #     data: T,
-    #     save_path: Path,
-    #     *,
-    #     title: str | None = None,
-    #     xlabel: str | None = None,
-    #     ylabel: str | None = None,
-    # ) -> None:
-    #     raise NotImplementedError
+    @abstractmethod
+    def move_files(self, resource_paths: RdeOutputResourcePath) -> None:
+        """Move the file to the given RDE's directory."""
+        raise NotImplementedError

@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import glob
-import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -51,10 +49,16 @@ class GraphPlotter(IGraphPlotter[pd.DataFrame]):
             StructuredError: File format conversion failure.
 
         """
-        target_file = resource_paths.rawfiles[0]  # There can only be one file.
+        target_file = resource_paths.rawfiles[0]
+
         try:
-            os.chdir(resource_paths.temp)
-            os.mkdir("image")
+            temp_dir = resource_paths.temp.resolve()
+
+            pptx_path = temp_dir / "result_figures.pptx"
+            image_dir = temp_dir / "image"
+
+            image_dir.mkdir(exist_ok=True)
+
             cmds = [
                 "libreoffice",
                 "--headless",
@@ -62,35 +66,57 @@ class GraphPlotter(IGraphPlotter[pd.DataFrame]):
                 "--nofirststartwizard",
                 "--convert-to",
                 "pdf",
-                "result_figures.pptx",
+                str(pptx_path),
             ]
+
             subprocess.run(
                 cmds,
                 encoding="utf_8",
                 capture_output=True,
                 check=True,
+                cwd=temp_dir,
             )
+
             dist_path = Path(target_file).stem + "_summary.pdf"
-            pdf_path = Path("result_figures.pdf").rename(dist_path)
-            img_path = Path("image")
+
+            pdf_path = temp_dir / "result_figures.pdf"
+            pdf_path.rename(temp_dir / dist_path)
+
+            pdf_path = temp_dir / dist_path
+
             convert_from_path(
                 pdf_path,
-                output_folder=img_path,
+                output_folder=image_dir,
                 fmt="png",
                 output_file=pdf_path.stem,
                 size=800,
             )
-            os.remove("result_figures.pptx")
 
-            os.chdir("../..")
-            move_files = glob.glob(os.path.join(resource_paths.temp, "image", "*-1.png"))
-            shutil.move(move_files[0], resource_paths.main_image)
-            move_files = glob.glob(os.path.join(resource_paths.temp, "image", "*"))
-            for move_file in move_files:
-                shutil.move(move_file, resource_paths.temp)
-            move_files = glob.glob(os.path.join(resource_paths.temp, "*.png"))
-            for move_file in move_files:
-                shutil.move(move_file, resource_paths.other_image)
+            pptx_path.unlink()
+
+            main_images = list(image_dir.glob("*-1.png"))
+
+            if not main_images:
+                msg = "main image was not generated."
+                raise StructuredError(msg)
+
+            shutil.move(
+                str(main_images[0]),
+                resource_paths.main_image,
+            )
+
+            for img in image_dir.glob("*"):
+                shutil.move(
+                    str(img),
+                    resource_paths.temp,
+                )
+
+            for img in temp_dir.glob("*.png"):
+                shutil.move(
+                    str(img),
+                    resource_paths.other_image,
+                )
+
         except Exception as e:
             err_msg = "failed in file format conversion failure."
             raise StructuredError(err_msg) from e
